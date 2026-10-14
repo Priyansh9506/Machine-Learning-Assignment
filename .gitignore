@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+.venv/
+venv/
+.env
+
+# Large data (raw Olist CSVs ~119 MB, generated data ~21 MB)
+Dataset/
+data/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
