@@ -109,6 +109,32 @@ def feature_names(groups: list[str] | None = None, kinds: list[str] | None = Non
     return f.index.tolist()
 
 
+# Registered features removed from the final model, with the evidence for each decision
+# (filled in by the Stage 5 ablations, notebooks/04_preprocessing_and_imbalance.ipynb).
+_PRODUCT_REASON = ("product group: removing it raised walk-forward PR-AUC for both learners "
+                   "(pooled LightGBM 0.150 -> 0.159 once purchase_month is gone); lasso zeroes "
+                   "weights/volumes and permutation importance is ~0")
+_CLOCK_REASON = ("stationarity audit: market-level aggregates and cumulative counts encode *when* an "
+                 "order was placed (market_resolved_30d has Spearman 0.95 with the purchase date; "
+                 "adversarial validation separates training from validation rows with AUC 1.0); a "
+                 "trend proxy fails when the trend reverses")
+DROPPED_AFTER_ABLATION: dict[str, str] = {
+    "purchase_month": ("raises within-month PR-AUC (acts as a time fixed effect) but lowers pooled "
+                       "cross-month PR-AUC (logreg 0.155 -> 0.123) and worsens Brier: it memorises "
+                       "one-off months (Feb 2017 3.0% vs Feb 2018 14.1% late)"),
+    **{f: _PRODUCT_REASON for f in ["total_weight_g", "max_weight_g", "total_volume_cm3", "max_volume_cm3",
+                                    "mean_photos", "mean_description_length", "mean_name_length",
+                                    "main_category", "any_category_missing"]},
+    **{f: _CLOCK_REASON for f in ["market_late_rate_30d", "market_resolved_30d", "route_resolved_n_min",
+                                  "seller_resolved_n_min", "seller_prior_orders_min"]},
+}
+
+
+def model_features() -> list[str]:
+    """The registered features minus those dropped after the ablation study."""
+    return [f for f in FEATURES.index if f not in DROPPED_AFTER_ABLATION]
+
+
 def leakage_audit() -> pd.DataFrame:
     """One table of every candidate column: when it is known and whether it is a Task A input."""
     allowed = FEATURES.assign(task_a_input="yes")[["group", "source", "known_when", "task_a_input"]]

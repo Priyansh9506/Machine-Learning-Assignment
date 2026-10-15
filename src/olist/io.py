@@ -40,6 +40,19 @@ def parse_dates(s: pd.Series, fmt: str) -> pd.Series:
     return out
 
 
+def file_checksums(data_dir: Path | None = None) -> dict[str, str]:
+    """SHA-256 of every source CSV, so a rerun can prove it used the same data."""
+    import hashlib
+    out = {}
+    for name in C.FILES.values():
+        h = hashlib.sha256()
+        with ((data_dir or C.DATA_DIR) / name).open("rb") as f:
+            for chunk in iter(lambda: f.read(1 << 20), b""):
+                h.update(chunk)
+        out[name] = h.hexdigest()
+    return out
+
+
 def file_inventory(data_dir: Path | None = None) -> pd.DataFrame:
     """File name, size and row count for every CSV without loading it into pandas."""
     rows = []

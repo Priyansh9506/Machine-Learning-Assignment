@@ -27,17 +27,18 @@ P, A, CR, DL, E = C.ORDER_TS_COLS
 ONE_DAY = pd.Timedelta(days=1)
 
 
-def load_sources() -> dict[str, pd.DataFrame]:
+def load_sources(data_dir=None) -> dict[str, pd.DataFrame]:
     """Only the tables and columns the primary pipeline needs (reviews/translation excluded)."""
     return {
-        "orders": load("orders"),
+        "orders": load("orders", data_dir=data_dir),
         "customers": load("customers", usecols=["customer_id", "customer_unique_id",
-                                                "customer_zip_code_prefix", "customer_state"]),
+                                                "customer_zip_code_prefix", "customer_state"], data_dir=data_dir),
         "items": load("items", usecols=["order_id", "order_item_id", "product_id", "seller_id",
-                                        "price", "freight_value"]),
-        "products": load("products"),
-        "sellers": load("sellers", usecols=["seller_id", "seller_zip_code_prefix", "seller_state"]),
-        "payments": load("payments"),
+                                        "price", "freight_value"], data_dir=data_dir),
+        "products": load("products", data_dir=data_dir),
+        "sellers": load("sellers", usecols=["seller_id", "seller_zip_code_prefix", "seller_state"],
+                        data_dir=data_dir),
+        "payments": load("payments", data_dir=data_dir),
     }
 
 

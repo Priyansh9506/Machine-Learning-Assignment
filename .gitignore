@@ -16,3 +16,6 @@ data/
 Thumbs.db
 .vscode/
 .idea/
+
+# Trained models (rebuilt by notebooks 06, 08 and 09)
+models/
