@@ -215,14 +215,20 @@ Machine-Learning-Assignment/
 │   ├── test_decision.py        break-even maths, policies, metrics, baselines
 │   └── test_scoring.py         deployed model scores unseen orders consistently
 │
-├── Dataset/   (git-ignored)    the 9 raw CSVs
-├── data/      (git-ignored)    zip centroids + processed parquet
-└── models/    (git-ignored)    trained models (rebuilt by notebooks 06, 08, 09)
+├── Dataset/   (Git LFS)        the 9 raw CSVs
+├── data/      (Git LFS)        zip centroids + processed parquet
+└── models/    (Git LFS)        trained models (rebuilt by notebooks 06, 08, 09)
 ```
 
 ---
 
 ## 🚀 Getting started
+
+The raw CSVs, processed data and trained models are stored with [Git LFS](https://git-lfs.com), so install it before cloning:
+
+```bash
+git lfs install
+```
 
 ```bash
 git clone https://github.com/Priyansh9506/Machine-Learning-Assignment.git
@@ -232,7 +238,7 @@ git clone https://github.com/Priyansh9506/Machine-Learning-Assignment.git
 pip install -r requirements.txt
 ```
 
-Put the 9 Olist CSVs in `Dataset/` ([Kaggle](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce)). Python 3.11+ is required.
+If you cloned without LFS, the files in `Dataset/`, `data/` and `models/` are small pointer files; run `git lfs pull` to fetch the real ones. Python 3.11+ is required.
 
 > [!IMPORTANT]
 > The copy used here stores `orders`/`order_items` timestamps as day-first `DD-MM-YYYY HH:MM`. The Kaggle release uses `YYYY-MM-DD HH:MM:SS`, and the loader deliberately raises a `ValueError` on a mismatch. With the Kaggle copy, set `ORDER_TS_FORMAT = "%Y-%m-%d %H:%M:%S"` in [`config.py`](src/olist/config.py). `run_all.py` warns if the files differ from the reference checksums.

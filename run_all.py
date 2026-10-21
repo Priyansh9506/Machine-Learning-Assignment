@@ -28,7 +28,7 @@ def check_data() -> None:
     try:
         now = file_checksums()
     except FileNotFoundError as exc:
-        sys.exit(f"missing data file: {exc.filename}\nPut the 9 Olist CSVs in Dataset/ (see README).")
+        sys.exit(f"missing data file: {exc.filename}\nThe CSVs in Dataset/ are stored with Git LFS: run `git lfs pull` (see README).")
     if not CHECKSUMS.exists():
         print("no reference checksums found; skipping the data check")
         return
@@ -38,6 +38,22 @@ def check_data() -> None:
           f"WARNING: {len(diff)} file(s) differ from the reference run (results will not match exactly): {diff}")
 
 
+def tidy_outputs(nb) -> None:
+    """Drop per-run execution timestamps and merge print output split across chunks, so re-runs diff cleanly."""
+    for cell in nb.cells:
+        cell.metadata.pop("execution", None)
+        if "outputs" not in cell:
+            continue
+        merged = []
+        for out in cell.outputs:
+            prev = merged[-1] if merged else None
+            if prev is not None and out.output_type == prev.output_type == "stream" and out.name == prev.name:
+                prev.text += out.text
+            else:
+                merged.append(out)
+        cell.outputs = merged
+
+
 def run_notebook(path: Path) -> float:
     import nbformat
     from nbconvert.preprocessors import ExecutePreprocessor
@@ -45,6 +61,7 @@ def run_notebook(path: Path) -> float:
     t = time.perf_counter()
     nb = nbformat.read(path, as_version=4)
     ExecutePreprocessor(timeout=7200, kernel_name="python3").preprocess(nb, {"metadata": {"path": str(path.parent)}})
+    tidy_outputs(nb)
     nbformat.write(nb, path)
     return time.perf_counter() - t
 

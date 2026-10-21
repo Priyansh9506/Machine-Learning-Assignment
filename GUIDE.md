@@ -181,7 +181,7 @@ The late rate changes over time (3% in some months, 14% in others). A model trai
 
 ## 4. How to run it
 
-You need Python 3.11+ and the 9 Olist CSVs in `Dataset/` (see the README for the timestamp-format note).
+You need Python 3.11+ and [Git LFS](https://git-lfs.com): the 9 Olist CSVs, the processed data and the trained models come with the repo through LFS (see the README).
 
 ```bash
 pip install -r requirements.txt
