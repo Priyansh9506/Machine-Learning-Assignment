@@ -7,15 +7,10 @@ __pycache__/
 venv/
 .env
 
-# Large data (raw Olist CSVs ~119 MB, generated data ~21 MB)
-Dataset/
-data/
+# Large data & models are tracked via Git LFS (see .gitattributes)
 
 # OS / editor
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
-
-# Trained models (rebuilt by notebooks 06, 08 and 09)
-models/

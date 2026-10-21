@@ -1,0 +1,6 @@
+{
+  "raw_rows": 1000163,
+  "exact_duplicates_dropped": 280007,
+  "outside_brazil_dropped": 33,
+  "zip_prefixes": 19010
+}
